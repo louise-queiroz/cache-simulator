@@ -49,12 +49,13 @@ def main():
 			if not valor:
 				break
 			# converte os bytes em um inteiro de 32 bits (little-endian)
-			valor = struct.unpack('<l', valor)[0]
+			valor = struct.unpack('<L', valor)[0]
 			#tag
 			for i in range(tam):
-				cache_tag[i] = valor >> int((n_bits_offset + n_bits_indice)) #fazer vetor?
+				cache_tag[i] = valor >> int((n_bits_offset + n_bits_indice)) #fazer
 			#indice
-				cache_indice[i] = (valor >> int(n_bits_offset)) and int((math.pow(2,n_bits_indice)-1)) #valor do int
+				cache_indice[i] = (valor >> int(n_bits_offset)) and int((math.pow(2,n_bits_indice)-1)) #valor do int, arrumar
+				#valor = bin(valor)
 				print(valor)  # exibe o valor lido
 
 
