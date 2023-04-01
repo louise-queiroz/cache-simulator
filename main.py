@@ -54,8 +54,7 @@ def main():
 			cache_tag[i] = addr >> int((n_bits_offset + n_bits_indice))
 			#indice
 			cache_indice[i] = addr >> int(n_bits_offset) & int((math.pow(2,n_bits_indice)-1))
-			#valor = bin(valor)
-			print(addr)  # exibe o valor lido
+			#print(addr)  # exibe o valor lido
 
 
 
