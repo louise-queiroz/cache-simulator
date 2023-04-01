@@ -48,15 +48,13 @@ def main():
 			# verifica se chegou ao fim do arquivo
 			if not valor:
 				break
-			# converte os bytes em um inteiro de 32 bits (little-endian)
-			addr = int(int.from_bytes(valor, byteorder='big', signed=False))
-			#valor = struct.unpack('<L', valor)[0]
+			# converte os bytes em um inteiro de 32 bits 
+			addr= int(int.from_bytes(valor, byteorder='big', signed=False))
 			#tag
-			#for i in range(tam):
-				#cache_tag[i] = valor >> int((n_bits_offset + n_bits_indice)) #fazer
+			cache_tag[i] = addr >> int((n_bits_offset + n_bits_indice))
 			#indice
-				#cache_indice[i] = (valor >> int(n_bits_offset)) and int((math.pow(2,n_bits_indice)-1)) #valor do int, arrumar
-				#valor = bin(valor)
+			cache_indice[i] = addr >> int(n_bits_offset) & int((math.pow(2,n_bits_indice)-1))
+			#valor = bin(valor)
 			print(addr)  # exibe o valor lido
 
 
