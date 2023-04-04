@@ -56,26 +56,47 @@ def main():
 			cache_indice[i] = addr >> int(n_bits_offset) & int((math.pow(2,n_bits_indice)-1))
 			#print(addr)  # exibe o valor lido
 
-
-
-#função mapeamento direto
-	def mapeamentoDireto(i):
-		tag =0 #so pra enrolar
-		if cache_val[i] == 0:
-			miss_compulsorio += 1
-			cache_val[i] = 1
-			cache_tag[i] = tag
-		else:
-			if cache_tag[i] == tag:
-				hit += 1
+		#add indice
+			#função mapeamento direto
+			if assoc == 1 :
+				if cache_val[i] == 0:
+					miss_compulsorio += 1
+					cache_val[i] = 1
+					cache_tag[i] = tag
+				else:
+					if cache_tag[i] == tag:
+					hit += 1
+				else:
+					miss_conflito +=1
+					cache_val[i] = 1
+					cache_tag[i] = tag 
+			#rever conceito de tot assoc ser nsets 1
+			elif nsets == 1:
+				if cache_val[i] == 0:
+					miss_compulsorio += 1
+					cache_val[i] = 1
+					cache_tag[i] = tag
+				else:
+					if cache_tag[i] == tag:
+					hit += 1
+				else:
+					#é capacidade ou conflito?
+					miss_capacidade += 1
+					cache_val[i] = 1
+					cache_tag[i] = tag
 			else:
-				miss_conflito +=1
-				cache_val[i] = 1
-				cache_tag[i] = tag
+				#aplicar método de varias vidas
+				for i in assoc:
+					if cache_val[i] == 0:
+					miss_compulsorio += 1
+					cache_val[i] = 1
+					cache_tag[i] = tag
+				else:
+					if cache_tag[i] == tag:
+					hit += 1
+				else:
+					#é capacidade ou conflito?
+					miss_conflito+= 1
+					cache_val[i] = 1
+					cache_tag[i] = tag
 
-
-	#def mapeamentoXVias(assoc):
-		
-
-if __name__ == '__main__':
-	main() 
