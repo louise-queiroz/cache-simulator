@@ -1,4 +1,3 @@
-
 import sys, math, struct
 import numpy as np
 
@@ -33,9 +32,9 @@ def main():
 	hit = 0
 	tam = len(cache_val)
 
-#cache vazia
-	for i in range(tam):
-		cache_val[i] = 0
+	#zerar tags e bits de validade
+	#tag = criarCacheTag(nsets, assoc)
+	#cache_val = criarCacheVal(nsets, assoc)
 
 #calcula o número de bits offset, indice e tag
 	n_bits_offset = math.log2(bsize)
@@ -45,9 +44,7 @@ def main():
 
 #abrir arquivo
 	with open('addresses/' + arquivoEntrada, 'rb') as arquivo:
-		#zerar tags e bits de validade
-		tag = criarCacheTag(nsets, assoc)
-		cache_val = criarCacheVal(nsets, assoc)
+
 		while True:
 			# lê 4 bytes (32 bits) do arquivo
 			valor = arquivo.read(4)
@@ -57,11 +54,12 @@ def main():
 			# converte os bytes em um inteiro de 32 bits 
 			addr= int(int.from_bytes(valor, byteorder='big', signed=False))
 			acessos += 1
+			for i in range(tam):
 			#tag
-			cache_tag[i] = addr >> int((n_bits_offset + n_bits_indice))
+				cache_tag[i] = addr >> int((n_bits_offset + n_bits_indice))
 			#indice
-			cache_indice[i] = addr >> int(n_bits_offset) & int((math.pow(2,n_bits_indice)-1))
-			#print(addr)  # exibe o valor lido
+				cache_indice[i] = addr >> int(n_bits_offset) & int((math.pow(2,n_bits_indice)-1))
+				#print(addr)  # exibe o valor lido
 
 			#função mapeamento direto
 			if assoc == 1 :
@@ -77,7 +75,7 @@ def main():
 						miss_conflito +=1
 						cache_val[i] = 1
 						cache_tag[i] = tag[i]
-			#rever conceito de tot assoc ser nsets 1
+			#totalmente associativa
 			elif nsets == 1:
 				#add indice
 				if cache_val[i] == 0:
@@ -127,3 +125,5 @@ def criarCacheVal(nsets, assoc):
 
 
 #add indice para val e resolver assoc de vias
+if __name__ == '__main__':
+	main() 
