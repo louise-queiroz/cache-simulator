@@ -21,20 +21,20 @@ def main():
 	print("flagOut =", flagOut)
 	print("arquivo =", arquivoEntrada)
 
-	cache_val = [nsets * assoc]
-	cache_tag = [nsets * assoc]
-	tag = [nsets * assoc]
-	cache_indice = [nsets * assoc]
+	tam = nsets * assoc	
+	cache_val = [0] * tam
+	cache_tag = [0] * tam
+	tag = 0
+	indice = 0
 	acessos = 0
 	miss_compulsorio = 0
 	miss_capacidade = 0
 	miss_conflito = 0
 	hit = 0
-	tam = len(cache_val)
+	missRate = 0
+	hitRate = 0
+	miss2Rate = 0
 
-	#zerar tags e bits de validade
-	#tag = criarCacheTag(nsets, assoc)
-	#cache_val = criarCacheVal(nsets, assoc)
 
 #calcula o número de bits offset, indice e tag
 	n_bits_offset = math.log2(bsize)
@@ -52,78 +52,32 @@ def main():
 			if not valor:
 				break
 			# converte os bytes em um inteiro de 32 bits 
+			#for i in range(tam):
 			addr= int(int.from_bytes(valor, byteorder='big', signed=False))
 			acessos += 1
-			for i in range(tam):
 			#tag
-				cache_tag[i] = addr >> int((n_bits_offset + n_bits_indice))
+			tag = addr >> int((n_bits_offset + n_bits_indice))
 			#indice
-				cache_indice[i] = addr >> int(n_bits_offset) & int((math.pow(2,n_bits_indice)-1))
-				#print(addr)  # exibe o valor lido
-
+			indice = addr >> int(n_bits_offset) & int((math.pow(2,n_bits_indice)-1))
+			mod = indice % nsets
+			
 			#função mapeamento direto
 			if assoc == 1 :
-				#add indice
-				if cache_val[i] == 0:
+				if cache_val[mod] == 0:
 					miss_compulsorio += 1
-					cache_val[i] = 1
-					cache_tag[i] = tag[i]
+					cache_val[mod] = 1
+					cache_tag[mod] = tag
 				else:
-					if cache_tag[i] == tag[i]:
+					if cache_tag[mod] == tag:
 						hit += 1
 					else:
 						miss_conflito +=1
-						cache_val[i] = 1
-						cache_tag[i] = tag[i]
-			#totalmente associativa
-			elif nsets == 1:
-				#add indice
-				if cache_val[i] == 0:
-					miss_compulsorio += 1
-					cache_val[i] = 1
-					cache_tag[i] = tag[i]
-				else:
-					if cache_tag[i] == tag[i]:
-						hit += 1
-					else:
-						#é capacidade ou conflito?
-						miss_capacidade += 1
-						cache_val[i] = 1
-						cache_tag[i] = tag[i]
-			else:
-				#aplicar método de varias vias com matriz
-				for i in assoc:
-					if cache_val[i] == 0:
-						miss_compulsorio += 1
-						cache_val[i] = 1
-						cache_tag[i] = tag[i]
-					else:
-						if cache_tag[i] == tag[i]:
-							hit += 1
-						else:
-						#é capacidade ou conflito?
-							miss_conflito+= 1
-							cache_val[i] = 1
-							cache_tag[i] = tag[i]
+						cache_val[mod] = 1
+						cache_tag[mod] = tag
 
+		missRate = (miss_conflito + miss_capacidade + miss_compulsorio)/acessos
+		hitRate = hit / acessos
+		print(acessos, hitRate, missRate, miss_compulsorio, miss_capacidade, miss_conflito)
 
-#função criar cache e zerar tags
-def criarCacheTag(nsets, assoc):
-	tam = [nsets * assoc]
-	tag = [tam]
-	for i in tam:
-		tag[i] = 0
-	return tag
-
-#função zerar bits de validade
-def criarCacheVal(nsets, assoc):
-	tam = [nsets * assoc]
-	val = [tam]
-	for i in tam:
-		val[i] = 0
-	return val
-
-
-#add indice para val e resolver assoc de vias
 if __name__ == '__main__':
 	main() 
