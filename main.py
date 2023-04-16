@@ -1,5 +1,4 @@
 import sys, math, struct, random
-import numpy as np
 
 def main():
 	if (len(sys.argv) != 7):
@@ -22,8 +21,6 @@ def main():
 	print("arquivo =", arquivoEntrada)
 
 	tam = nsets * assoc	
-	cache_val = [0] * tam
-	cache_tag = [0] * tam
 	tag = 0
 	indice = 0
 	acessos = 0
@@ -38,12 +35,14 @@ def main():
 	cont = 0
 	disp = 0
 
-	#print(matriz)
 #calcula o número de bits offset, indice e tag
 	n_bits_offset = math.log2(bsize)
 	n_bits_indice = math.log2(nsets)
 	
 	n_bits_tag = 32 - n_bits_offset - n_bits_indice
+
+	cache_tag = criarCache(assoc,nsets,tam)
+	cache_val = criarCache(assoc,nsets,tam)
 
 #abrir arquivo
 	with open('addresses/' + arquivoEntrada, 'rb') as arquivo:
@@ -114,9 +113,17 @@ def main():
 		hitRate = hit / acessos
 
 		print(acessos,"{:.4f} {:.4f} {:.4f} {:.4f} {:.4f}". format(hitRate, missRate, miss_compulsorio, miss_capacidade, miss_conflito))
+		print(cache_tag)
 
 def subRandom(valora, valorb):
 	return random.randint(valora, valorb)
+
+def criarCache (assoc,nsets, tam):
+	if assoc !=1 and nsets !=1:
+		cache = [[0] * nsets for i in range(assoc)]
+	else:
+		cache = [0] * tam
+	return cache
 
 if __name__ == '__main__':
 	main() 
