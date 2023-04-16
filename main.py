@@ -101,9 +101,44 @@ def main():
 						miss_capacidade +=1
 						endereco = subRandom(0, (assoc-1))
 						cache_tag[endereco] = tag
-			else: #futura assoc conjunto
-				erro += 1
-				print("erro")
+			else: #assoc conjunto
+				cont=0
+				#hit
+				for i in range(assoc):
+					if cache_tag[i][mod] == tag and cache_val[i][mod]== 1:
+						hit +=1
+						cont +=1
+						break
+				#miss
+				if cont==0:
+					#checa conjuntos vazios
+					for i in range(assoc):
+						if cache_val [i][mod]== 0 and cache_tag [i][mod]== 0:
+							disp+=1
+					#se todos os conjuntos estiverem vazios:
+					if disp == assoc:
+						for i in range(assoc):
+							if cache_val [i][mod]== 0 and cache_tag [i][mod]== 0:
+								cache_val[i][mod]= 1
+								cache_tag[i][mod] = tag
+								miss_compulsorio += 1
+					#conflito ou capacidade?
+					else:
+						for i in range(assoc):
+							if cache_val [i][mod]== 0 and cache_tag [i][mod]== 0:
+								cache_val[i][mod]= 1
+								cache_tag[i][mod] = tag
+								miss_conflito += 1
+								cont +=1
+								break
+						if cont==0:
+							endereco = subRandom(0, (assoc-1))
+							cache_val[endereco][mod]= 1
+							cache_tag[endereco][mod] = tag
+							miss_capacidade += 1
+						
+     
+       #procurar o mod e conferir a validade e a tag nas duas vias
 
 		misses = miss_conflito + miss_capacidade + miss_compulsorio
 		missRate = (miss_conflito + miss_capacidade + miss_compulsorio)/acessos
@@ -113,7 +148,6 @@ def main():
 		hitRate = hit / acessos
 
 		print(acessos,"{:.4f} {:.4f} {:.4f} {:.4f} {:.4f}". format(hitRate, missRate, miss_compulsorio, miss_capacidade, miss_conflito))
-		print(cache_tag)
 
 def subRandom(valora, valorb):
 	return random.randint(valora, valorb)
@@ -126,4 +160,4 @@ def criarCache (assoc,nsets, tam):
 	return cache
 
 if __name__ == '__main__':
-	main() 
+	main()
