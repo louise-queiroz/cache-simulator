@@ -115,27 +115,26 @@ def main():
 					for i in range(assoc):
 						if cache_val [i][mod]== 0 and cache_tag [i][mod]== 0:
 							disp+=1
-					#se todos os conjuntos estiverem vazios:
-					if disp == assoc:
+				if disp == assoc:
 						for i in range(assoc):
 							if cache_val [i][mod]== 0 and cache_tag [i][mod]== 0:
 								cache_val[i][mod]= 1
 								cache_tag[i][mod] = tag
 								miss_compulsorio += 1
 					#conflito ou capacidade?
-					else:
-						for i in range(assoc):
-							if cache_val [i][mod]== 0 and cache_tag [i][mod]== 0:
-								cache_val[i][mod]= 1
-								cache_tag[i][mod] = tag
-								miss_conflito += 1
-								cont +=1
-								break
-						if cont==0:
-							endereco = subRandom(0, (assoc-1))
-							cache_val[endereco][mod]= 1
-							cache_tag[endereco][mod] = tag
-							miss_capacidade += 1
+				else:
+					for i in range(assoc):
+						if cache_val [i][mod]== 0 and cache_tag [i][mod]== 0:
+							cache_val[i][mod]= 1
+							cache_tag[i][mod] = tag
+							miss_conflito += 1
+							cont +=1
+							break
+					if cont==0:
+						endereco = subRandom(0, (assoc-1))
+						cache_val[endereco][mod]= 1
+						cache_tag[endereco][mod] = tag
+						miss_capacidade += 1
 						
      
        #procurar o mod e conferir a validade e a tag nas duas vias
@@ -146,7 +145,7 @@ def main():
 		miss_capacidade = miss_capacidade/misses
 		miss_conflito = miss_conflito/misses
 		hitRate = hit / acessos
-
+		#print(cache_tag)
 		print(acessos,"{:.4f} {:.4f} {:.4f} {:.4f} {:.4f}". format(hitRate, missRate, miss_compulsorio, miss_capacidade, miss_conflito))
 
 def subRandom(valora, valorb):
