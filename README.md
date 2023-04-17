@@ -18,10 +18,10 @@ python3 cache_simulator.py <nsets> <bsize> <assoc> <substituição> <flag_saida>
 ```
 
 **cache_simulator.py**: nome do arquivo de execução;
-**nsets**: número de conjuntos na cache (número total de “linhas” ou “entradas” da cache);
-**bsize**: tamanho do bloco em bytes;
-**assoc**: grau de associatividade (número de vias ou blocos que cada conjunto possui);
-**substituição**:  política de substituição, R de random.
-**flag_saida**: flag que ativa o modo padrão de saída de dados;
-**arquivo_de_entrada**: arquivo com os endereços para acesso à cache.
+\n**nsets**: número de conjuntos na cache (número total de “linhas” ou “entradas” da cache);
+\n**bsize**: tamanho do bloco em bytes;
+\n**assoc**: grau de associatividade (número de vias ou blocos que cada conjunto possui);
+\n**substituição**:  política de substituição, R de random.
+\n**flag_saida**: flag que ativa o modo padrão de saída de dados;
+\n**arquivo_de_entrada**: arquivo com os endereços para acesso à cache.
 
