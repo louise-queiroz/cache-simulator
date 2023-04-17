@@ -13,13 +13,6 @@ def main():
 	flagOut = int(sys.argv[5])
 	arquivoEntrada = sys.argv[6]
 
-	print("nsets =", nsets)
-	print("bsize =", bsize)
-	print("assoc =", assoc)
-	print("subst =", subst)
-	print("flagOut =", flagOut)
-	print("arquivo =", arquivoEntrada)
-
 	tam = nsets * assoc	
 	tag = 0
 	indice = 0
@@ -35,16 +28,17 @@ def main():
 	cont = 0
 	disp = 0
 
-#calcula o número de bits offset, indice e tag
+	#calcula o número de bits offset, indice e tag
 	n_bits_offset = math.log2(bsize)
 	n_bits_indice = math.log2(nsets)
 	
 	n_bits_tag = 32 - n_bits_offset - n_bits_indice
 
+	#gera cache
 	cache_tag = criarCache(assoc,nsets,tam)
 	cache_val = criarCache(assoc,nsets,tam)
 
-#abrir arquivo
+	#abrir arquivo
 	with open('addresses/' + arquivoEntrada, 'rb') as arquivo:
 
 		while True:
@@ -61,27 +55,34 @@ def main():
 			tag = addr >> int((n_bits_offset + n_bits_indice))
 			#indice
 			indice = addr >> int(n_bits_offset) & int((math.pow(2,n_bits_indice)-1))
+			#cálculo do endereço
 			mod = indice % nsets
 
-			#função mapeamento direto
+			#mapeamento direto
 			if assoc == 1 :
+				#miss compulsório
 				if cache_val[mod] == 0:
 					miss_compulsorio += 1
 					cache_val[mod] = 1
 					cache_tag[mod] = tag
 				else:
+					#hit
 					if cache_tag[mod] == tag:
 						hit += 1
 					else:
+						#miss conflito
 						miss_conflito +=1
 						cache_val[mod] = 1
 						cache_tag[mod] = tag
-			#função totalmente associativa
+
+			#mapeamento totalmente associativo
 			elif nsets == 1:
+				#variáveis auxiliares
 				cont = 0
 				disp = 0
 				#procura o valor em todos os blocos
 				for i in range(assoc):
+					#verifica se há hit
 					if cache_tag[i] == tag and cache_val[i] == 1:
 						hit +=1
 						cont = 1
@@ -89,6 +90,7 @@ def main():
 				#tratamento da falta
 				if cont == 0:
 					while disp == 0:
+						#verifica se há espaço vazio na cache e miss compulsório
 						for i in range(assoc):
 							if cache_val[i] == 0:
 								cache_val[i] = 1
@@ -96,12 +98,16 @@ def main():
 								cache_tag[i] = tag
 								disp = 1
 								break
-						disp = 2
-					if disp == 2:
-						miss_capacidade +=1
-						endereco = subRandom(0, (assoc-1))
-						cache_tag[endereco] = tag
-			else: #assoc conjunto
+						#miss de capacidade e substitui
+						if disp!=1:
+							miss_capacidade +=1
+							endereco = subRandom(0, (assoc-1))
+							cache_tag[endereco] = tag
+							disp = 1
+
+			#mapeamento conjunto associativo
+			else: 
+				#variável auxiliar
 				cont=0
 				#hit
 				for i in range(assoc):
@@ -109,9 +115,9 @@ def main():
 						hit +=1
 						cont +=1
 						break
-				#miss
+				#tratamento da falta
 				if cont==0:
-					#checa conjuntos vazios
+					#checa por conjuntos vazios
 					for i in range(assoc):
 						if cache_val [i][mod]== 0 and cache_tag [i][mod]== 0:
 							disp+=1
@@ -123,40 +129,51 @@ def main():
 								miss_compulsorio += 1
 					#conflito ou capacidade?
 				else:
+					#conflito
 					for i in range(assoc):
-						if cache_val [i][mod]== 0 and cache_tag [i][mod]== 0:
+						if cache_val [i][mod]== 0:
 							cache_val[i][mod]= 1
 							cache_tag[i][mod] = tag
 							miss_conflito += 1
 							cont +=1
 							break
+					#capacidade
 					if cont==0:
 						endereco = subRandom(0, (assoc-1))
 						cache_val[endereco][mod]= 1
 						cache_tag[endereco][mod] = tag
 						miss_capacidade += 1
 						
-     
-       #procurar o mod e conferir a validade e a tag nas duas vias
 
+		#cálculos
 		misses = miss_conflito + miss_capacidade + miss_compulsorio
 		missRate = (miss_conflito + miss_capacidade + miss_compulsorio)/acessos
 		miss_compulsorio = miss_compulsorio / misses
 		miss_capacidade = miss_capacidade/misses
 		miss_conflito = miss_conflito/misses
 		hitRate = hit / acessos
-		#print(cache_tag)
-		print(acessos,"{:.4f} {:.4f} {:.4f} {:.4f} {:.4f}". format(hitRate, missRate, miss_compulsorio, miss_capacidade, miss_conflito))
 
+		#formato de saída
+		if flagOut == 1:
+			print(acessos,"{:.4f} {:.4f} {:.4f} {:.4f} {:.4f}". format(hitRate, missRate, miss_compulsorio, miss_capacidade, miss_conflito))
+		elif flagOut == 0:
+			print("Acessos:", acessos ,"Hit rate: {:.4f} Miss rate: {:.4f} Miss compulsório: {:.4f} Miss de capacidade: {:.4f} Miss de conflito: {:.4f}". format(hitRate, missRate, miss_compulsorio, miss_capacidade, miss_conflito))
+		else:
+			print("Erro de flag")
+
+
+#função substituição random
 def subRandom(valora, valorb):
 	return random.randint(valora, valorb)
 
+#função para criar cache
 def criarCache (assoc,nsets, tam):
 	if assoc !=1 and nsets !=1:
 		cache = [[0] * nsets for i in range(assoc)]
 	else:
 		cache = [0] * tam
 	return cache
+
 
 if __name__ == '__main__':
 	main()
