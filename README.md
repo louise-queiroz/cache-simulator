@@ -8,7 +8,7 @@ sudo apt-get install python3.
 
 Caso seja windows:
 
-Acesse o site oficial do [Python](https://www.python.org/downloads/windows/);
+Acesse o site oficial do [Python](https://www.python.org/downloads/windows/); <br />
 Faça o download e instalação.
 
 ## Compilação
