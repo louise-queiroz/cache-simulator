@@ -3,7 +3,7 @@ import sys, math, struct, random
 def main():
 	if (len(sys.argv) != 7):
 		print("Numero de argumentos incorreto. Utilize:")
-		print("python cache_simulator.py <nsets> <bsize> <assoc> <substituição> <flag_saida> arquivo_de_entrada")
+		print("python3 cache_simulator.py <nsets> <bsize> <assoc> <substituição> <flag_saida> arquivo_de_entrada")
 		exit(1)
 	
 	nsets = int(sys.argv[1])
