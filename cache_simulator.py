@@ -117,26 +117,26 @@ def main():
 						break
 				#tratamento da falta
 				if cont==0:
-					#checa por conjuntos vazios
-					for i in range(assoc):
-						if cache_val [i][mod]== 0 and cache_tag [i][mod]== 0:
-							disp+=1
-				if disp == assoc:
-						for i in range(assoc):
-							if cache_val [i][mod]== 0 and cache_tag [i][mod]== 0:
-								cache_val[i][mod]= 1
-								cache_tag[i][mod] = tag
-								miss_compulsorio += 1
-					#conflito ou capacidade?
-				else:
-					#conflito
+					#checa se há algum bloco do conjunto vazio
 					for i in range(assoc):
 						if cache_val [i][mod]== 0:
 							cache_val[i][mod]= 1
 							cache_tag[i][mod] = tag
-							miss_conflito += 1
+							miss_compulsorio += 1
 							cont +=1
 							break
+					#conflito ou capacidade?
+				if cont == 0:
+					#conflito
+					for i in range(assoc):
+						for j in range(nsets):
+							if cache_val [i][j]== 0:
+								endereco = subRandom(0, (assoc-1))
+								cache_val[endereco][mod]= 1
+								cache_tag[endereco][mod] = tag
+								miss_conflito += 1
+								cont +=1
+								break
 					#capacidade
 					if cont==0:
 						endereco = subRandom(0, (assoc-1))
